@@ -1,9 +1,15 @@
 # Global default environment
-container:
-  image: python:slim
+
+build_and_run_template: &BUILD_AND_RUN_TEMPLATE
+  fetch_git_tags_script: git fetch --tags
+  install_script: python setup.py install
+  version_script: self-updating-app --version
+  test_script: self-updating-app
 
 task:
-  name: Build and Run
+  name: Build and Run (Linux)
+  container:
+    image: python:slim
   install_git_script:
     - apt-get update
     - apt-get upgrade -y
@@ -12,9 +18,16 @@ task:
     folder: ~/.cache/pip
     fingerprint_script: echo $PYTHON_VERSION && cat requirements.txt
     populate_script: pip install -r requirements.txt
-  # pip_install_script: pip install -r requirements.txt
-  fetch_git_tags_script: git fetch --tags
-  install_script: python setup.py install
-  version_script: self-updating-app --version
-  test_script: self-updating-app
+  pip_install_script: pip install -r requirements.txt
+  <<: *BUILD_AND_RUN_TEMPLATE
 
+task:
+  name: Build and Run (Windows)
+  windows_container:
+    image: cirrusci/windowsservercore:2019
+    os_version: 2019
+  env:
+    PATH: C:\Python37\Scripts\;%PATH%
+  install_python_script: choco install -y python --version=3.7.2
+  pip_install_script: pip install -r requirements.txt
+  <<: *BUILD_AND_RUN_TEMPLATE
