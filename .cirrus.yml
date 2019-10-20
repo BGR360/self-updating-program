@@ -8,7 +8,8 @@ task:
     folder: ~/.cache/pip
     fingerprint_script: echo $PYTHON_VERSION && cat requirements.txt
     populate_script: pip install -r requirements.txt
-  build_script: python setup.py install
+  build_script: python setup.py develop
+  # install_script: python setup.py install
   version_script: self-updating-app --version
   run_script: self-updating-app
 

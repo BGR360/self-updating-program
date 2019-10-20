@@ -6,6 +6,6 @@ Their values are automatically detected by the PBR package using git tags.
 
 from pbr.version import VersionInfo
 
-INFO = VersionInfo('self_updating_app').semantic_version()
+INFO = VersionInfo('app').semantic_version()
 __version__ = INFO.release_string()
 __version_info__ = INFO.version_tuple()
