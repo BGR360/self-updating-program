@@ -1,3 +1,7 @@
+"""
+This module defines the main() entry point as a click command.
+"""
+
 import click
 
 from app.app import SelfUpdatingApp

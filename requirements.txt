@@ -3,3 +3,5 @@ click
 
 # PBR for runtime detection of version from git tags.
 pbr
+
+pylint
