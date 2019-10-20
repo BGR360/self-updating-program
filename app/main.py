@@ -1,6 +1,8 @@
 from app.app import SelfUpdatingApp
 
-self_updating_app = SelfUpdatingApp()
+def main():
+    self_updating_app = SelfUpdatingApp()
+    self_updating_app.run()
 
 if __name__ == '__main__':
-    self_updating_app.run()
+    main()
