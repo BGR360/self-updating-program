@@ -4,13 +4,17 @@ container:
 
 task:
   name: Build and Run
+  install_git_script:
+    - apt-get update
+    - apt-get upgrade -y
+    - apt-get install -y git
   pip_cache:
     folder: ~/.cache/pip
     fingerprint_script: echo $PYTHON_VERSION && cat requirements.txt
     populate_script: pip install -r requirements.txt
-  git_script: git log -v
-  build_script: python setup.py develop
-  # install_script: python setup.py install
+  # pip_install_script: pip install -r requirements.txt
+  fetch_git_tags_script: git fetch --tags
+  install_script: python setup.py install
   version_script: self-updating-app --version
-  run_script: self-updating-app
+  test_script: self-updating-app
 

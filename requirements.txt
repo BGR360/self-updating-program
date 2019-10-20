@@ -1,4 +1,4 @@
-# click for nice command-line program definition
+# click for nice command-line program definition.
 click
 
 # PBR for runtime detection of version from git tags.
