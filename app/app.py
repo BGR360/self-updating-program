@@ -14,7 +14,8 @@ from app.version import __version__, get_latest_version_string_from_github_repo
 class SelfUpdatingApp():
     '''A self-updating application :O'''
 
-    def __init__(self):
+    def __init__(self, no_update=False):
+        self.no_update = no_update
         # Fetch most recent version from GitHub repository
         self.remote_version = SemanticVersion.from_pip_string(
             get_latest_version_string_from_github_repo())
@@ -76,9 +77,11 @@ class SelfUpdatingApp():
             print('Please respond with "yes" or "no" (or "y" or "n").')
 
     def run(self):
-        if self.is_out_of_date():
-            print('There is a new version available (v{}).'.format(
-                self.remote_version.release_string()))
-            if self.prompt_yes_or_no('Would you like to update?', default=True):
-                self.update()
+        print('Local version = {}'.format(self.local_version.release_string()))
+        if not self.no_update:
+            if self.is_out_of_date():
+                print('There is a new version available (v{}).'.format(
+                    self.remote_version.release_string()))
+                if self.prompt_yes_or_no('Would you like to update?', default=True):
+                    self.update()
         print('Hello world!')
