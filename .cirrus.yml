@@ -24,7 +24,7 @@ task:
   fetch_git_tags_script: git fetch --tags
   install_script: python setup.py install
   version_script: self-updating-app --version
-  test_script: self-updating-app
+  test_script: self-updating-app --no-update
 
 task:
   name: Test Install from GitHub
@@ -32,4 +32,4 @@ task:
   only_if: $CIRRUS_RELEASE != "" || $CIRRUS_PR != ""
   << : *INSTALL_GIT_SCRIPT
   << : *PIP_CACHE
-  install_script: python scripts/ci/install_latest_from_github.py $CIRRUS_REPO_CLONE_URL $CIRRUS_RELEASE
+  install_script: python scripts/ci/install_latest_from_github.py $CIRRUS_REPO_CLONE_URL $CIRRUS_TAG
