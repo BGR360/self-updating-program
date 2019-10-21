@@ -27,9 +27,20 @@ task:
   test_script: self-updating-app --no-update
 
 task:
-  name: Test Install from GitHub
+  name: Test Install from GitHub and Check Version
   # Only run for Releases
   only_if: $CIRRUS_RELEASE != ""
   << : *INSTALL_GIT_SCRIPT
   << : *PIP_CACHE
   install_script: python scripts/ci/install_latest_from_github.py $CIRRUS_REPO_CLONE_URL $CIRRUS_TAG
+
+task:
+  # Test without cloning the repo first
+  name: Test Install from GitHub
+  # Only run for Releases and Pull Requests
+  only_if: $CIRRUS_RELEASE != "" || $CIRRUS_PR != ""
+  # Override clone script to be empty
+  clone_script: echo "noop"
+  << : *INSTALL_GIT_SCRIPT
+  install_script: pip install git+${CIRRUS_REPO_CLONE_URL}@${CIRRUS_CHANGE_IN_REPO}
+  run_script: self-updating-app --version
