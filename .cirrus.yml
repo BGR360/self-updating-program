@@ -2,19 +2,34 @@
 container:
   image: python:slim
 
-task:
-  name: Build and Run
+# Templates for reuse
+install_git_script_template: &INSTALL_GIT_SCRIPT
   install_git_script:
     - apt-get update
     - apt-get upgrade -y
     - apt-get install -y git
+pip_cache_template: &PIP_CACHE
   pip_cache:
     folder: ~/.cache/pip
     fingerprint_script: echo $PYTHON_VERSION && cat requirements.txt
     populate_script: pip install -r requirements.txt
+
+# Tasks
+
+task:
+  name: Build and Run
+  << : *INSTALL_GIT_SCRIPT
+  << : *PIP_CACHE
   pip_install_script: pip install -r requirements.txt
   fetch_git_tags_script: git fetch --tags
   install_script: python setup.py install
   version_script: self-updating-app --version
   test_script: self-updating-app
 
+task:
+  name: Test Install from GitHub
+  # Only run for Releases and Pull Requests
+  only_if: $CIRRUS_RELEASE != "" || $CIRRUS_PR != ""
+  << : *INSTALL_GIT_SCRIPT
+  << : *PIP_CACHE
+  install_script: python scripts/ci/install_latest_from_github.py $CIRRUS_REPO_CLONE_URL $CIRRUS_RELEASE
