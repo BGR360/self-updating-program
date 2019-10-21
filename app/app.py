@@ -83,4 +83,4 @@ class SelfUpdatingApp():
                     self.remote_version.release_string()))
                 if self.prompt_yes_or_no('Would you like to update?', default=True):
                     self.update()
-        print('Hello world!')
+        print('Hello world! How are you?')
