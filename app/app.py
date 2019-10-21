@@ -8,7 +8,7 @@ import sys
 
 from pbr.version import SemanticVersion
 
-from app.config import GITHUB_REPO
+from app.config import github_pypi_package_url
 from app.version import __version__, get_latest_version_string_from_github_repo
 
 class SelfUpdatingApp():
@@ -17,7 +17,7 @@ class SelfUpdatingApp():
     def __init__(self):
         # Fetch most recent version from GitHub repository
         self.remote_version = SemanticVersion.from_pip_string(
-            get_latest_version_string_from_github_repo(GITHUB_REPO))
+            get_latest_version_string_from_github_repo())
         # Fetch locally installed version from PBR
         self.local_version = SemanticVersion.from_pip_string(__version__)
 
@@ -27,7 +27,7 @@ class SelfUpdatingApp():
 
     def update(self):
         '''Use pip to upgrade the current installation to the newest version.'''
-        package = 'git+https://github.com/{}.git'.format(GITHUB_REPO)
+        package = github_pypi_package_url()
         command = [sys.executable, '-m', 'pip', 'install', '--upgrade', package]
         subprocess.call(command, stdout=sys.stdout, stderr=sys.stderr)
 
