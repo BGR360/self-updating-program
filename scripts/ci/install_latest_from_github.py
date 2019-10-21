@@ -15,6 +15,8 @@ EXPECTED_VERSION = None
 if len(sys.argv) > 2:
     EXPECTED_VERSION = sys.argv[2]
 
+print('EXPECTED_VERSION = {}'.format(EXPECTED_VERSION))
+
 def subprocess_call_and_print(command):
     print()
     print(' '.join(command))
