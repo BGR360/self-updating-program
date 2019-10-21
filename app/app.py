@@ -29,7 +29,13 @@ class SelfUpdatingApp():
         '''Use pip to upgrade the current installation to the newest version.'''
         package = github_pypi_package_url()
         command = [sys.executable, '-m', 'pip', 'install', '--upgrade', package]
-        subprocess.call(command, stdout=sys.stdout, stderr=sys.stderr)
+        subprocess.check_call(command, stdout=sys.stdout, stderr=sys.stderr)
+
+    def install_version(self, version):
+        '''Install a specific version, specified as a string.'''
+        package = github_pypi_package_url(version=version)
+        command = [sys.executable, '-m', 'pip', 'install', package]
+        subprocess.check_call(command, stdout=sys.stdout, stderr=sys.stderr)
 
     def prompt_yes_or_no(self, prompt=None, default=None):
         '''
