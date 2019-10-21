@@ -3,6 +3,9 @@ This module defines the SelfUpdatingApp class, which hosts all the application
 logic.
 """
 
+import subprocess
+import sys
+
 from pbr.version import SemanticVersion
 
 from app.config import GITHUB_REPO
@@ -11,22 +14,65 @@ from app.version import __version__, get_latest_version_string_from_github_repo
 class SelfUpdatingApp():
     '''A self-updating application :O'''
 
-    def get_remote_version(self):
-        '''Return the latest version available on GitHub.'''
-        return get_latest_version_string_from_github_repo(GITHUB_REPO)
-
-    def get_local_version(self):
-        '''Return the currently installed version of the app.'''
-        return __version__
+    def __init__(self):
+        # Fetch most recent version from GitHub repository
+        self.remote_version = SemanticVersion.from_pip_string(
+            get_latest_version_string_from_github_repo(GITHUB_REPO))
+        # Fetch locally installed version from PBR
+        self.local_version = SemanticVersion.from_pip_string(__version__)
 
     def is_out_of_date(self):
         '''Return True if remote version is newer than installed version.'''
-        local = SemanticVersion.from_pip_string(self.get_local_version())
-        remote = SemanticVersion.from_pip_string(self.get_remote_version())
-        return local < remote
+        return self.local_version < self.remote_version
+
+    def update(self):
+        '''Use pip to upgrade the current installation to the newest version.'''
+        package = 'git+https://github.com/{}.git'.format(GITHUB_REPO)
+        command = [sys.executable, '-m', 'pip', 'install', '--upgrade', package]
+        subprocess.call(command, stdout=sys.stdout, stderr=sys.stderr)
+
+    def prompt_yes_or_no(self, prompt=None, default=None):
+        '''
+        Prompt the user for yes or no and return a bool.
+
+        Prompt the user (e.g., '[y/n]') and return True if they answer 'yes',
+        'y', or 'Y', and False if they answer 'no', 'n', or 'N'.  Will re-prompt
+        until the user provides either a yes or a no.
+
+        Parameters
+        ----------
+        prompt : text to display before '[y/n]'
+            If None, then only '[y/n]' is displayed.
+        default : default response
+            If True, default is yes (i.e., '[Y/n]').
+            If False, default is no (i.e., '[y/N]').
+            If None, there is no default, user must provide an answer (i.e., '[y/n]').
+
+        Thank you to user fmark on StackOverflow:
+        https://stackoverflow.com/questions/3041986
+        '''
+        if default is None:
+            post_prompt = ' [y/n]'
+        elif default:
+            post_prompt = ' [Y/n]'
+        else:
+            post_prompt = ' [y/N]'
+
+        while True:
+            sys.stdout.write('{}{}'.format(prompt, post_prompt))
+            choice = str(input()).lower()
+            if default is not None and choice == '':
+                return default
+            if choice in ['yes', 'ye', 'y']:
+                return True
+            if choice in ['no', 'n']:
+                return False
+            print('Please respond with "yes" or "no" (or "y" or "n").')
 
     def run(self):
-        print('Local version: {}'.format(self.get_local_version()))
-        print('Remote version: {}'.format(self.get_remote_version()))
-        print('Is out of date: {}'.format(self.is_out_of_date()))
+        if self.is_out_of_date():
+            print('There is a new version available (v{}).'.format(
+                self.remote_version.release_string()))
+            if self.prompt_yes_or_no('Would you like to update?', default=True):
+                self.update()
         print('Hello world!')
