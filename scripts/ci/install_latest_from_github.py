@@ -1,7 +1,8 @@
 """
 Usage: install_latest_from_github.py GITHUB_CLONE_REPO [EXPECTED_VERSION]
 
-If EXPECTED_VERSION is provided, 
+If EXPECTED_VERSION is provided, will check that the version printed by
+self-updating-app --version matches.
 """
 
 import re
