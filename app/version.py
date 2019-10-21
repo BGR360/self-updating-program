@@ -11,7 +11,7 @@ from pbr.version import VersionInfo
 
 from app.config import github_api_url
 
-INFO = VersionInfo('app').semantic_version()
+INFO = VersionInfo('self_updating_app').semantic_version()
 __version__ = INFO.release_string()
 __version_info__ = INFO.version_tuple()
 
