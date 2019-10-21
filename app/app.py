@@ -77,7 +77,6 @@ class SelfUpdatingApp():
             print('Please respond with "yes" or "no" (or "y" or "n").')
 
     def run(self):
-        print('Local version = {}'.format(self.local_version.release_string()))
         if not self.no_update:
             if self.is_out_of_date():
                 print('There is a new version available (v{}).'.format(
