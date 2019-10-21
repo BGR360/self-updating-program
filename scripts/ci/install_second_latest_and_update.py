@@ -30,7 +30,7 @@ package = 'git+https://github.com/{}.git@{}'.format(GITHUB_REPO, previous_versio
 subprocess_call_and_print([sys.executable, '-m', 'pip', 'install', package])
 
 # Run and accept any update
-subprocess_call_and_print(['self-updating-app']) #, '--yes-update'])
+subprocess_call_and_print(['self-updating-app', '--yes-update'])
 
 # Run to print version and verify it
 print_app_version(expected_version=EXPECTED_VERSION)
