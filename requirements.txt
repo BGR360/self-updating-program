@@ -4,4 +4,7 @@ click
 # PBR for runtime detection of version from git tags.
 pbr
 
+# Grass-fed HTTP requests (for checking remote git version)
+requests
+
 pylint
