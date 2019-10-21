@@ -14,17 +14,8 @@ from app.version import __version__, get_latest_version_string_from_github_repo
 class SelfUpdatingApp():
     '''A self-updating application :O'''
 
-    def __init__(self, accept_update=None):
-        '''Create a SelfUpdatingApp.
-
-        Parameters
-        ----------
-        accept_update : accept, reject, or prompt for whether to update
-            If True, will automatically accept any update (if one exists).
-            If False, will not check for updates.
-            If None, will prompt user whether they want to update.
-        '''
-        self.accept_update = accept_update
+    def __init__(self, no_update=False):
+        self.no_update = no_update
         # Fetch most recent version from GitHub repository
         self.remote_version = SemanticVersion.from_pip_string(
             get_latest_version_string_from_github_repo())
@@ -37,20 +28,9 @@ class SelfUpdatingApp():
 
     def update(self):
         '''Use pip to upgrade the current installation to the newest version.'''
-        print('Updating...')
         package = github_pypi_package_url()
         command = [sys.executable, '-m', 'pip', 'install', '--upgrade', package]
         subprocess.check_call(command, stdout=sys.stdout, stderr=sys.stderr)
-
-    def check_for_update_and_maybe_update(self):
-        if self.accept_update != False:
-            if self.is_out_of_date():
-                print('There is a new version available (v{}).'.format(
-                    self.remote_version.release_string()))
-                if self.accept_update:
-                    self.update()
-                elif self.prompt_yes_or_no('Would you like to update?', default=True):
-                    self.update()
 
     def install_version(self, version):
         '''Install a specific version, specified as a string.'''
@@ -97,5 +77,10 @@ class SelfUpdatingApp():
             print('Please respond with "yes" or "no" (or "y" or "n").')
 
     def run(self):
-        self.check_for_update_and_maybe_update()
+        if not self.no_update:
+            if self.is_out_of_date():
+                print('There is a new version available (v{}).'.format(
+                    self.remote_version.release_string()))
+                if self.prompt_yes_or_no('Would you like to update?', default=True):
+                    self.update()
         print('Hello world! How are you?')
