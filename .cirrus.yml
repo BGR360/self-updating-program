@@ -52,4 +52,4 @@ task:
   << : *INSTALL_GIT_SCRIPT
   << : *PIP_CACHE
   pip_install_script: pip install -r requirements.txt
-  install_previous_and_self_update_script: python scripts/ci/install_second_latest_and_update.py $CIRRUS_REPO_NAME $CIRRUS_TAG
+  install_previous_and_self_update_script: python scripts/ci/install_second_latest_and_update.py $CIRRUS_REPO_FULL_NAME $CIRRUS_TAG
