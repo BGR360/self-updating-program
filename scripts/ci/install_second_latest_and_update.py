@@ -17,11 +17,14 @@ EXPECTED_VERSION = None
 if len(sys.argv) > 2:
     EXPECTED_VERSION = sys.argv[2]
 
+print('GITHUB_REPO = {}'.format(GITHUB_REPO))
 print('EXPECTED_VERSION = {}'.format(EXPECTED_VERSION))
 
 # Fetch second-to-latest version string from GitHub API
 api_url = 'https://api.github.com/repos/{}/releases'.format(GITHUB_REPO)
-releases = requests.get(api_url).json()
+api_req = requests.get(api_url)
+releases = api_req.json()
+print('Num releases: {}'.format(len(releases)))
 previous_version = releases[1]['tag_name']
 
 # Install previous version
