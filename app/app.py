@@ -99,3 +99,4 @@ class SelfUpdatingApp():
     def run(self):
         self.check_for_update_and_maybe_update()
         print('Hello world! How are you?')
+        print('Who, me? I\'m on fire. -World')
